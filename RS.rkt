@@ -13,16 +13,43 @@
         #f)
 ))
 
-(define (probar_comandos Cubo Movs)
-  (cond ((null? Movs)
-         '())
-        (else
-         (cons (probar_comandos_aux Cubo (symbol->string (car Movs)))
-               (probar_comandos Cubo (cdr Movs)))))
+(define (obtenerMov movimiento)
+  (string-ref (symbol->string (car movimiento)) 0)
 )
 
-(define (probar_comandos_aux Cubo mov)
-  (aplicarPosicion Cubo (string-ref mov 0) (string-ref mov 1) ) ;Falta incluir la dirección
+(define (obtenerPos movimiento)
+  (string-ref (symbol->string (car movimiento)) 1)
+)
+
+(define (obtenerDir movimiento)
+  (string-ref (symbol->string (car movimiento)) 2)
+)
+
+(define (probar_comandos Cubo Movs)
+  (cond ((null? Movs)
+         Cubo)
+        ((equal? (obtenerMov Movs) '#\F )
+         (probar_comandos_filas Cubo (symbol->string (car Movs)) (cdr Movs))) ; En caso de que se busque un movimiento en las filas
+        ((equal? (obtenerMov Movs) '#\C )
+         (probar_comandos_columnas Cubo (symbol->string (car Movs)) (cdr Movs))) ; En caso de que se busque un movimiento en las columnas
+        ;(else
+        ; (probar_comandos_aux Cubo (symbol->string (car Movs)) (cdr Movs))))
+         )
+)
+
+(define (probar_comandos_aux Cubo mov movSiguiente)
+  
+  ;(aplicarPosicion Cubo (string-ref mov 0) (string-ref mov 1) ) ;Falta incluir la dirección
+  ;(aplicar_direccion (aplicarPosicion Cubo (string-ref mov 0) (string-ref mov 1)) (string-ref mov 2))
+  #f;(mostrar_resultado Cubo (string-ref mov 1) (aplicar_direccion (aplicarPosicion Cubo (string-ref mov 0) (string-ref mov 1)) (string-ref mov 2)) movSiguiente )
+)
+
+(define (probar_comandos_filas Cubo mov movSiguiente)
+  (mostrar_resultado_filas Cubo (string-ref mov 1) (aplicar_direccion (aplicarPosicion Cubo (string-ref mov 0) (string-ref mov 1)) (string-ref mov 2)) movSiguiente )
+)
+
+(define (probar_comandos_columnas Cubo mov movSiguiente)
+  (mostrar_resultado_columnas (vuelta_al_cubo Cubo) (string-ref mov 1) (aplicar_direccion (aplicarPosicion Cubo (string-ref mov 0) (string-ref mov 1)) (string-ref mov 2)) movSiguiente )
 )
 
 (define (aplicarPosicion Cubo movimiento posicion) ;;Cambiar función por una recursiva
@@ -54,6 +81,108 @@
                 (Posicion_colum 6 (vuelta_al_cubo Cubo)))))
         (else
          #f))
+)
+
+(define (aplicar_direccion vector direccion)
+  (cond ((equal? direccion '#\D)
+         (Girar-der vector))
+        ((equal? direccion '#\I)
+         (Girar-izq vector))
+        ((equal? direccion '#\B)
+         (Girar-ab vector))
+        ((equal? direccion '#\A)
+         (Girar-ar vector))
+        )
+)
+
+(define (mostrar_resultado_filas Cubo posicion vector movSiguiente) ;; Optimizar codigo
+  (cond ((equal? posicion '#\1)
+         (probar_comandos (caca Cubo vector 1) movSiguiente))
+        ((equal? posicion '#\2)
+         (probar_comandos (caca Cubo vector 2) movSiguiente))
+        ((equal? posicion '#\3)
+         (probar_comandos (caca Cubo vector 3) movSiguiente))
+        ((equal? posicion '#\4)
+         (probar_comandos (caca Cubo vector 4) movSiguiente))
+        ((equal? posicion '#\5)
+         (probar_comandos (caca Cubo vector 5) movSiguiente))
+        ((equal? posicion '#\6)
+         (probar_comandos (caca Cubo vector 6) movSiguiente)))
+)
+
+(define (mostrar_resultado_columnas Cubo posicion vector movSiguiente) ;; Optimiar codigo
+  (cond ((equal? posicion '#\1)
+         (probar_comandos (caca_c Cubo vector 1) movSiguiente))
+        ((equal? posicion '#\2)
+         (probar_comandos (caca_c Cubo vector 2) movSiguiente))
+        ((equal? posicion '#\3)
+         (probar_comandos (caca_c Cubo vector 3) movSiguiente))
+        ((equal? posicion '#\4)
+         (probar_comandos (caca_c Cubo vector 4) movSiguiente))
+        ((equal? posicion '#\5)
+         (probar_comandos (caca_c Cubo vector 5) movSiguiente))
+        ((equal? posicion '#\6)
+         (probar_comandos (caca_c Cubo vector 6) movSiguiente)))
+)
+
+(define (mostrar_resultado_aux Cubo vector cont pos) ;;No funciona
+  (cond ((null? Cubo)
+         '())
+        ((equal? cont pos)
+         (cons vector (mostrar_resultado_aux (cdr Cubo) vector (+ cont 1) pos )))
+        (else
+         (cons (car Cubo) (mostrar_resultado_aux (cdr Cubo) vector (+ cont 1) pos) )))
+)
+
+(define (caca Cubo vector pos)
+  (cond ((null? Cubo) ;; Condicion de parada
+         '())
+        ((null? vector) ;; Se encarga de acomodar los ultimos 2 lados del cubo ((U) (D))
+         (cons (car Cubo) (caca (cdr Cubo) vector pos) ))
+        (else ;; Se encarga de reacomodar el cubo en sus primeros 4 lados ((F) (R) (B) (L))
+         (cons (caca_aux (car Cubo) (car vector) 1 pos)
+               (caca (cdr Cubo) (cdr vector) pos ))))
+)
+
+(define (caca_aux Cubo cara cont pos)
+  (cond ((null? Cubo)
+         '())
+        ((equal? cont pos)
+         (cons cara
+               (caca_aux (cdr Cubo) cara (+ cont 1) pos) ))
+        (else
+         (cons (car Cubo)
+               (caca_aux (cdr Cubo) cara (+ cont 1) pos) )))
+)
+
+(define (caca_c Cubo vector pos)
+  (cond ((null? Cubo)
+         '())
+        ((null? vector)
+         '())
+        (else ;; Se encarga de reacomodar el cubo en sus primeros 4 lados ((F) (R) (B) (L))
+         (cons (caca_c_aux (car Cubo) (car vector) pos)
+               (caca_c (cdr Cubo) (cdr vector) pos ))))
+)
+
+(define (caca_c_aux Cubo vector pos)
+  (cond ((null? vector)
+         '())
+        (else
+         (cons (caca_c_aux_aux (car Cubo) (car vector) 1 pos)
+               (caca_c_aux (cdr Cubo) (cdr vector) pos))))
+)
+
+(define (caca_c_aux_aux Cubo vector cont pos)
+  (cond ((null? Cubo)
+         '())
+        ((equal? cont pos)
+         (cons vector
+               (caca_c_aux_aux (cdr Cubo) vector (+ cont 1) pos) ))
+        (else
+         (cons (car Cubo)
+               (caca_c_aux_aux (cdr Cubo) vector (+ cont 1) pos) ))
+        )
 )
 
 ;; Funciones para girar una fila o columna. Toma el tercer argumento de una instruccion. Ej: F2D -> D
@@ -160,7 +289,7 @@
                  (borrar-1f (cdr mat))))))
                                        
 (define (borrar-xc x cont mat) ;;Borra x columnas de una matriz // ; cont = 4 -> Numero de lados, pero puede ser 6? Ahora lo estudio
-  (cond ((> cont 0)
+  (cond ((> cont 0) ;; Cambiarlo porque no va a servir en otras dimensiones
          (cons (borrar-xc_aux x (car mat)) (borrar-xc x (- cont 1) (cdr mat))))
         (else
          '()))
@@ -255,9 +384,9 @@
                     ((r an r) (an r an) (r an r))
                     ((an r an) (r an r) (an r an))))
 
-(define cubo3Desor '(( (r an am) (b b an) (am am r) )
-                     ( (an b r) (b r am) (b v b) )
-                     ( (b am b) (v am r) (an a r) )
-                     ( (an r a) (v an r) (am am v) )
-                     ( (v r v) (a a a) (am v a) )
-                     ( (an an a) (a v b) (v an a) )))
+(define cubo3Desor '(( (a am an) (v b a) (am a am) )
+                     ( (v a b) (r an v) (r b b) )
+                     ( (r an am) (am am b) (r r v) )
+                     ( (an b b) (a r r) (am r r) )
+                     ( (a v a) (v v an) (an an b) )
+                     ( (v am a) (b a an) (an am v) )))
