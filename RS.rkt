@@ -326,8 +326,7 @@
 
 (define (convertirALista matriz) ; Matriz -> Lista ;; ** Cambiar nombre por obtenerLista **
   (cond ((>= (largo matriz) 1)
-         (convertir_aux matriz matriz)
-               )
+         (convertir_aux matriz matriz))
         (else
          '())
         ))
