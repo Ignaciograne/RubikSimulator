@@ -1,6 +1,6 @@
 #lang racket
 (require "rubik.rkt")
-(require "InterfazGrafica.rkt")
+(require "interfaz.rkt")
 
 
 (define (RS X Cubo Movs)
@@ -10,7 +10,7 @@
   (cond
     ((null? Movs)empty)
     (else
-     (cons (invertirLista (carasFLU (estadosDelCubo X Cubo (list (car Movs)))))
+     (cons (carasFLU (estadosDelCubo X Cubo (list (car Movs))))
            (RS_aux
             X
             (estadosDelCubo X Cubo (list (car Movs)))
@@ -26,26 +26,3 @@
    ( (am am am) (am am am) (am am am) ))
  '(F1D F1I F2D F3I))
 
-#|
-(RS_aux
- 3
- '(( (v v v) (v v v) (v v v) )
-   ( (r r r) (r r r) (r r r) )
-   ( (a a a) (a a a) (a a a) )
-   ( (an an an) (an an an) (an an an) )
-   ( (b b b) (b b b) (b b b) )
-   ( (am am am) (am am am) (am am am) ))
- '(F1D F1I))
-|#
-
-#|
-(estadosDelCubo 3
-                '(( (v v v) (v v v) (v v v) )
-                    ( (r r r) (r r r) (r r r) )
-                    ( (a a a) (a a a) (a a a) )
-                    ( (an an an) (an an an) (an an an) )
-                    ( (b b b) (b b b) (b b b) )
-                    ( (am am am) (am am am) (am am am) ))
-                '(F1D F1I))
-
-|#

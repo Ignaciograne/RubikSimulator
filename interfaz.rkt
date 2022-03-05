@@ -7,9 +7,9 @@
 
 (define-struct cube(estado))
 
-(define initial (make-cube '(((R R R R)(R R R R)(R R R R) (R R R R))
-                     ((G G G G)(G G G G)(G G G G) (G G G G))
-                     ((O O O O)(O O O O)(O O O O) (O O O O)))))
+(define initial (make-cube '(((O R G)(G W R)(O O Y))
+                             ((R W W)(O O O)(R Y R))
+                             ((G B R)(R B R)(Y G G)))))
 
 (define ESTADOS '())
 (define DIMENSION 0)
@@ -60,9 +60,9 @@
                         (make-posn (+ TAMAÑO TAMAÑO) MITAD)) "outline" "black")))))
 
 (define (estadoCubo lista)
-  (append (transformarAForma (list-ref lista 0) "arriba")
+  (append (transformarAForma (list-ref lista 2) "arriba")
           (transformarAForma (list-ref lista 1) "izquierda")
-          (transformarAForma (list-ref lista 2) "centro")))
+          (transformarAForma (list-ref lista 0) "centro")))
 
 (define (posicionCubo2 lista)
   (append (listaAPuntos (list-ref lista 0) "arriba" (+ (* TAMAÑO 1.5) 100) (+ (* TAMAÑO 2.5) 100))
@@ -91,16 +91,15 @@
   (listaAPuntos (list-ref lista 2) "centro" (list-ref CENTROx 2) (list-ref CENTROy 2))))
 
 (define (listaAPuntos lista cara x y) (transformarAPuntos lista cara 0 0 x y))
-
-(define (transformarAPuntos lista cara fila col x y)
+(define (transformarAPuntos lista cara col fila x y)
   (cond ((null? lista) '())
-        ((list? (car lista)) (append (transformarAPuntos (car lista) cara fila col x y) (transformarAPuntos (cdr lista) cara (+ fila 1) col x y)))
+        ((list? (car lista)) (append (transformarAPuntos (car lista) cara col fila x y) (transformarAPuntos (cdr lista) cara col (+ fila 1) x y)))
         ((equal? cara "arriba")
-         (cons (make-posn (+ (+ x (* TAMAÑO fila)) (* TAMAÑO col)) (+ (- y (* MITAD fila)) (* MITAD col))) (transformarAPuntos (cdr lista) cara fila (+ col 1) x y)))
+         (cons (make-posn (+ (+ x (* TAMAÑO col)) (* TAMAÑO fila)) (+ (- y (* MITAD col)) (* MITAD fila))) (transformarAPuntos (cdr lista) cara (+ col 1) fila x y)))
         ((equal? cara "izquierda")
-         (cons (make-posn (+ x (* TAMAÑO fila)) (+ (+ y (* TAMAÑO col)) (* MITAD fila))) (transformarAPuntos (cdr lista) cara fila (+ col 1) x y)))
+         (cons (make-posn (+ x (* TAMAÑO col)) (+ (+ y (* TAMAÑO fila)) (* MITAD col))) (transformarAPuntos (cdr lista) cara (+ col 1) fila x y)))
         ((equal? cara "centro")
-         (cons (make-posn (+ x (* TAMAÑO fila)) (- (+ y (* TAMAÑO col)) (* MITAD fila))) (transformarAPuntos (cdr lista) cara fila (+ col 1) x y)))))
+         (cons (make-posn (+ x (* TAMAÑO col)) (- (+ y (* TAMAÑO fila)) (* MITAD col))) (transformarAPuntos (cdr lista) cara (+ col 1) fila x y)))))
 
 
 (define (draw-cube c)
@@ -133,29 +132,12 @@
 
 (define (inicio listaEstados)
   (set! ESTADOS listaEstados)
-  (set! DIMENSION 4)
+  (set! DIMENSION 3)
   (set! TAMAÑO ( / 150 DIMENSION))
   (set! MITAD (/ TAMAÑO 2.5))
   (big-bang initial [to-draw draw-cube]
     [on-key changeStatus]
     ))
 
-#|
-(inicio '((((O R G)(G W R)(O O Y))
-           ((R W W)(O O O)(R Y R))
-           ((G B R)(R B R)(Y G G)))
 
-          (((O R G)(O O O)(O R R))
-           ((R W W)(R B R)(R Y R))
-           ((G B R)(G W R)(Y G G)))
-
-          (((O R G)(O O O)(O O Y))
-           ((R W W)(R B R)(R Y R))
-           ((G B R)(G W R)(Y G G)))
-
-          (((O R G)(O O O)(O O Y))
-           ((R W W)(R B R)(R Y R))
-           ((G B R)(G W R)(Y G G)))))
-
-|#
 
