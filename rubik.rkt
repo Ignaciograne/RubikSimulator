@@ -1,5 +1,7 @@
 #lang racket
 (provide estadosDelCubo)
+(provide invertirLista)
+(provide carasFLU)
 
 (define (obtenerMov movimiento)
   (obtenerMov_aux (string-ref (symbol->string movimiento) 0))
@@ -340,6 +342,25 @@
   (largo (car lista)))
 ;;___________________________________
 
+;; Invertir Lista
+(define (invertirLista lista)
+  (cond
+    ((empty? lista)empty)
+    (else (append (invertirLista (cdr lista)) (list (car lista))))))
+
+;; Seleccionar caras ((F)(L)(U)) 1,4,5
+(define (carasFLU matriz)
+  (carasFLU-aux matriz 1))
+(define (carasFLU-aux matriz contador)
+  (cond
+    ((> contador 6)'())
+    ((equal? contador 1)
+     (cons (car matriz) (carasFLU-aux (cdr matriz) (+ 1 contador))))
+    ((equal? contador 4)
+     (cons (car matriz) (carasFLU-aux (cdr matriz) (+ 1 contador))))
+    ((equal? contador 5)
+     (cons (car matriz) (carasFLU-aux (cdr matriz) (+ 1 contador))))
+    (else (carasFLU-aux (cdr matriz) (+ 1 contador)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Para pruebas
 (define cubo3 '(( (v v v) (v v v) (v v v) )

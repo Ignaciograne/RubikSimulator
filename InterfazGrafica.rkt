@@ -16,12 +16,12 @@
 (define contEstados 0)
 
 (define (getColor letra)
-  (cond ((equal? letra 'R) "Firebrick")
-        ((equal? letra 'W) "Snow" )
-        ((equal? letra 'G) "Medium Sea Green")
-        ((equal? letra 'B) "Royal Blue")
-        ((equal? letra 'O) "Dark Orange")
-        ((equal? letra 'Y) "Goldenrod")
+  (cond ((equal? letra 'r) "Firebrick")
+        ((equal? letra 'b) "Snow" )
+        ((equal? letra 'v) "Medium Sea Green")
+        ((equal? letra 'a) "Royal Blue")
+        ((equal? letra 'an) "Dark Orange")
+        ((equal? letra 'am) "Goldenrod")
         (else "black" )))
 
 (define (transformarAForma lista cara)

@@ -4,13 +4,13 @@
 
 
 (define (RS X Cubo Movs)
-  (inicio (RS_aux X Cubo Movs)))
+  (inicio  (RS_aux X Cubo Movs)))
 
 (define (RS_aux X Cubo Movs)
   (cond
-    ((null? Movs)'())
+    ((null? Movs)empty)
     (else
-     (cons (estadosDelCubo X Cubo (list (car Movs)))
+     (cons (invertirLista (carasFLU (estadosDelCubo X Cubo (list (car Movs)))))
            (RS_aux
             X
             (estadosDelCubo X Cubo (list (car Movs)))
@@ -24,7 +24,7 @@
    ( (an an an) (an an an) (an an an) )
    ( (b b b) (b b b) (b b b) )
    ( (am am am) (am am am) (am am am) ))
- '(F1D F1I))
+ '(F1D F1I F2D F3I))
 
 #|
 (RS_aux
