@@ -1,4 +1,5 @@
 #lang racket
+(provide estadosDelCubo)
 
 (define (obtenerMov movimiento)
   (obtenerMov_aux (string-ref (symbol->string movimiento) 0))
@@ -52,7 +53,7 @@
 )
 
 ;; Funcion principal
-(define (RS X Cubo Movs)
+(define (estadosDelCubo X Cubo Movs)
  (cond ((or (< X 2) (< 6 X) ) ; Valida las dimensiones
         (quote (Cubo fuera de rango)))
        ((not (list? Movs)) ; Valida los movimientos *;; Todavia se puede validar por cada letra *

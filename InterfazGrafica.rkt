@@ -1,4 +1,5 @@
 #lang racket
+(provide inicio)
 
 (require 2htdp/universe)
 (require 2htdp/image)
@@ -139,6 +140,7 @@
     [on-key changeStatus]
     ))
 
+#|
 (inicio '((((O R G)(G W R)(O O Y))
            ((R W W)(O O O)(R Y R))
            ((G B R)(R B R)(Y G G)))
@@ -155,5 +157,5 @@
            ((R W W)(R B R)(R Y R))
            ((G B R)(G W R)(Y G G)))))
 
-
+|#
 
