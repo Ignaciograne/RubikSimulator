@@ -3,9 +3,10 @@
 (provide invertirLista)
 (provide carasFLU)
 
-(define (obtenerMov movimiento)
-  (obtenerMov_aux (string-ref (symbol->string movimiento) 0))
-)
+; ______________________________________________________________________
+;; Funciones para obtener los valores de cada movimiento de la lista Mov
+(define (obtenerMov movimiento) ; Determina si se quiere mover una fila o una columna
+  (obtenerMov_aux (string-ref (symbol->string movimiento) 0)))
 
 (define (obtenerMov_aux mov)
   (cond ((equal? mov '#\F)
@@ -13,12 +14,10 @@
         ((equal? mov '#\C)
          'C)
         (else
-         #f))
-)
+         #f)))
 
-(define (obtenerPos movimiento)
-  (obtenerPos_aux (string-ref (symbol->string movimiento) 1))
-)
+(define (obtenerPos movimiento) ; Determina la posicion de la fila o columna que se desea mover
+  (obtenerPos_aux (string-ref (symbol->string movimiento) 1)))
 
 (define (obtenerPos_aux mov)
   (cond ((equal? mov '#\1)
@@ -34,12 +33,10 @@
         ((equal? mov '#\6)
          '6)
         (else
-         #f))
-)
+         #f)))
 
-(define (obtenerDir movimiento)
-  (obtenerDir_aux (string-ref (symbol->string movimiento) 2))
-)
+(define (obtenerDir movimiento) ; Determina la direccion a la cual girar la fila o columna
+  (obtenerDir_aux (string-ref (symbol->string movimiento) 2)))
 
 (define (obtenerDir_aux mov)
   (cond ((equal? mov '#\D)
@@ -51,8 +48,8 @@
         ((equal? mov '#\B)
          'B)
         (else
-         #f))
-)
+         #f)))
+; ______________________________________________________________________
 
 ;; Funcion principal
 (define (estadosDelCubo X Cubo Movs)
@@ -64,22 +61,13 @@
         (ejecutar_movimientos Cubo Movs)) ;;Aqui va toda la logica, de momento - Under construction -
        
        (else
-        #f)
-))
+        #f)))
 
-(define (ejecutar_movimientos Cubo Movs)
-  (cond ((null? Movs)
+(define (ejecutar_movimientos Cubo Movs) ; Se ejecuta recursivamente junto a su auxiliar para realizar los movimientos al cubo. Cuando no queden movimientos que 
+  (cond ((null? Movs)                    ; hacer, significa que ya el programa cumplio su objetivo y por tanto devuelve el cubo.
          Cubo)
         (else
-         (ejecutar_movimientos_aux Cubo (car Movs) (cdr Movs) )))
-)
-
-(define (obtener_foc Cubo Mov) ; FoC = Fila o Columna
-  (cond ((equal? (obtenerMov Mov) 'F)
-         (FilaColumna Cubo (obtenerPos Mov)))
-        ((equal? (obtenerMov Mov) 'C)
-         (FilaColumna Cubo (obtenerPos Mov)))) ;(FilaColumna (reordenar_cubo (voltear_cubo Cubo)) (obtenerPos Mov))
-)
+         (ejecutar_movimientos_aux Cubo (car Movs) (cdr Movs) ))))
 
 (define (ejecutar_movimientos_aux Cubo Mov Movs)
   (cond ((equal? (obtenerDir Mov) 'A) ; Si es A o B, debe de ser un movimiento de columna
@@ -90,19 +78,20 @@
          (ejecutar_movimientos (construir_cubo Cubo Mov (GirarIzq (obtener_foc Cubo Mov)) (darVuelta (transpuesta (car (cddddr Cubo)))) (darVuelta_aux (transpuesta (car (cdr (cddddr Cubo)))) '()) ) Movs))
         ((equal? (obtenerDir Mov) 'D)
          (ejecutar_movimientos (construir_cubo Cubo Mov (GirarDer (obtener_foc Cubo Mov)) (darVuelta_aux (transpuesta (car (cddddr Cubo))) '()) (darVuelta (transpuesta (car (cdr (cddddr Cubo))))) ) Movs))
-        )
-)
+        ))
+
+(define (obtener_foc Cubo Mov) ; FoC = Fila o Columna ; Se encarga de obtener la fila o columna perteneciente a cierta posicion
+  (FilaColumna Cubo (obtenerPos Mov)))
 
 (define (construir_cubo Cubo Mov filaColumnaGirada quintaCaraGirada sextaCaraGirada) ;; Construye los 6 lados del cubo, tomando la fila/columna girada y las otras dos caras
   (cond ((lateralSuperior? Mov)
-         (convertirACubo (completar_cubo Cubo filaColumnaGirada Mov) quintaCaraGirada (car (cdr (cddddr Cubo))))) ;; Aqui se construye el cubo
+         (convertirACubo (completar_cubo Cubo filaColumnaGirada Mov) quintaCaraGirada (car (cdr (cddddr Cubo)))))
         ((lateralInferior? Cubo Mov)
          (convertirACubo (completar_cubo Cubo filaColumnaGirada Mov) (car (cddddr Cubo)) sextaCaraGirada))
         (else
-         (convertirACubo (completar_cubo Cubo filaColumnaGirada Mov) (car (cddddr Cubo)) (car (cdr (cddddr Cubo)))) ))
-)
+         (convertirACubo (completar_cubo Cubo filaColumnaGirada Mov) (car (cddddr Cubo)) (car (cdr (cddddr Cubo)))) )))
 
-(define (convertirACubo primerasCuatroCaras quintaCara sextaCara) ;; Esta funcion no me representa :v Pero a falta de append
+(define (convertirACubo primerasCuatroCaras quintaCara sextaCara) ; Une las primeras cuatro caras del cubo con las dos restantes
   (cond ((not (null? primerasCuatroCaras))
          (cons (car primerasCuatroCaras)
                (convertirACubo (cdr primerasCuatroCaras) quintaCara sextaCara) ))
@@ -113,49 +102,44 @@
          (cons sextaCara
                (convertirACubo primerasCuatroCaras '() '()) ))
         (else
-         '()))
-)
+         '())))
 
-;(define ())
-
-(define (reordenar_cubo Cubo) ; Para el cambio de columnas a filas
+(define (reordenar_cubo Cubo) ; Para el cambio de posición de columnas a filas. Se diferencia de la transpuesta en que esta solamente REORDENA las entradas, mas no realiza cambios en el cubo
   (reordenar_cubo_aux (car Cubo) (car (cddddr Cubo)) (darVuelta (darVuelta_aux (car (cddr Cubo)) '())) (car (cdr (cddddr Cubo))) (car (cdddr Cubo)) (car (cdr Cubo)))
 )
 
-(define (re_reordenar_cubo Cubo) ; Para el cambio de filas a columnas
+(define (re_reordenar_cubo Cubo) ; Para el cambio de filas a columnas. Se diferencia de la transpuesta en que esta solamente REORDENA las entradas, mas no realiza cambios en el cubo
   (reordenar_cubo_aux (car Cubo) (car (cdr (cddddr Cubo))) (darVuelta (darVuelta_aux (car (cddr Cubo)) '())) (car (cddddr Cubo)) (car (cdr Cubo))  (car (cdddr Cubo)))
 )
 
-(define (reordenar_cubo_aux primerCara quintaCara tercerCara sextaCara cuartaCara segundaCara) ;; Esta funcion no me representa x2 :v Pero a falta de append
+(define (reordenar_cubo_aux primerCara segundaCara tercerCara cuartaCara quintaCara sextaCara) ; Reordena el cubo en funcion de cuales caras se quieran reordenar
   (cond ((not (null? primerCara))
          (cons primerCara
-               (reordenar_cubo_aux '() quintaCara tercerCara sextaCara cuartaCara segundaCara) ))
-        ((not (null? quintaCara))
-         (cons quintaCara
-               (reordenar_cubo_aux '() '() tercerCara sextaCara cuartaCara segundaCara) ))
-        ((not (null? tercerCara))
-         (cons tercerCara
-               (reordenar_cubo_aux '() '() '() sextaCara cuartaCara segundaCara) ))
-        ((not (null? sextaCara))
-         (cons sextaCara
-               (reordenar_cubo_aux '() '() '() '() cuartaCara segundaCara) ))
-        ((not (null? cuartaCara))
-         (cons cuartaCara
-               (reordenar_cubo_aux '() '() '() '() '() segundaCara) ))
+               (reordenar_cubo_aux '() segundaCara tercerCara cuartaCara quintaCara sextaCara) ))
         ((not (null? segundaCara))
          (cons segundaCara
+               (reordenar_cubo_aux '() '() tercerCara cuartaCara quintaCara sextaCara) ))
+        ((not (null? tercerCara))
+         (cons tercerCara
+               (reordenar_cubo_aux '() '() '() cuartaCara quintaCara sextaCara) ))
+        ((not (null? cuartaCara))
+         (cons cuartaCara
+               (reordenar_cubo_aux '() '() '() '() quintaCara sextaCara) ))
+        ((not (null? quintaCara))
+         (cons quintaCara
+               (reordenar_cubo_aux '() '() '() '() '() sextaCara) ))
+        ((not (null? sextaCara))
+         (cons sextaCara
                (reordenar_cubo_aux '() '() '() '() '() '()) ))
         (else
-         '()))
-)
+         '())))
 
-(define (completar_cubo Cubo filaColumna Mov)
+(define (completar_cubo Cubo filaColumna Mov) ; Se obtiene la fila o columa girada y se completa la cara correspondiente con las otras filas o columnas que no se han girado
   (cond ((null? filaColumna)
          '())
         (else
          (cons (completar_cubo_aux (car Cubo) (car filaColumna) (obtenerPos Mov) 1)
-               (completar_cubo (cdr Cubo) (cdr filaColumna) Mov) )))
-)
+               (completar_cubo (cdr Cubo) (cdr filaColumna) Mov) ))))
 
 (define (completar_cubo_aux cara filaColumna pos cont)
   (cond ((null? cara)
@@ -168,7 +152,7 @@
                (completar_cubo_aux (cdr cara) filaColumna pos (+ cont 1) ))))
 )
 
-(define (lateralSuperior? Mov)
+(define (lateralSuperior? Mov) ; Sirven para determinar si el giro se ha hecho en algun lateral del cubo
   (cond ((equal? (obtenerPos Mov) 1)
          #t)
         (else
@@ -182,14 +166,14 @@
          #f))
 )
 
-(define (darVuelta_aux cara caraVuelta) ;; La vuelta hacia la derecha ; La cara que recibe tiene que estar TRANSPUESTA
+(define (darVuelta_aux cara caraVuelta) ; La vuelta hacia la derecha ; La cara que recibe tiene que estar TRANSPUESTA
   (cond ((null? cara)
          caraVuelta)
         (else
          (darVuelta_aux (cdr cara) (cons (car cara) caraVuelta) )))
 )
 
-(define (darVuelta cara) ;; La vuelta hacia la izquierda ; La cara que recibe tiene que estar TRANSPUESTA
+(define (darVuelta cara) ; La vuelta hacia la izquierda ; La cara que recibe tiene que estar TRANSPUESTA
   (cond ((null? cara)
          '())
         (else
@@ -197,7 +181,7 @@
                (darVuelta (cdr cara)) )))
 )
 
-(define (voltear_cubo Cubo)
+(define (voltear_cubo Cubo) ; Voltea el cubo 90 grados hacia la derecha
   (cond ((null? Cubo)
          '())
         (else
@@ -205,12 +189,11 @@
                (voltear_cubo (cdr Cubo)) )))
 )
 
-(define (devolver_cubo Cubo) ;; Voltea el cubo hasta que este vuelva a su estado inicial
+(define (devolver_cubo Cubo) ;; Voltea el cubo hasta que este vuelva a su estado inicial - 90 grados hacia la izquierda o 270 hacia la derecha
   (voltear_cubo (voltear_cubo (voltear_cubo Cubo)))
-  ;(transponer (voltear_cubo (transponer (voltear_cubo cubo3Desor))))
 )
 
-(define (FilaColumna Cubo pos)
+(define (FilaColumna Cubo pos) ; Obtiene una fila o columna en una posicion dada
   (cond ((not (null? Cubo))
          (cons (FilaColumna_aux (car Cubo) pos 1)
                (FilaColumna (cdr Cubo) pos)))
@@ -218,11 +201,11 @@
          '()))
 )
 
-(define (FilaColumna_aux Cubo pos cont)
+(define (FilaColumna_aux cara pos cont)
   (cond ((> pos cont)
-         (FilaColumna_aux (cdr Cubo) pos (+ cont 1)))
+         (FilaColumna_aux (cdr cara) pos (+ cont 1)))
         (else
-         (car Cubo)))
+         (car cara))) ;; El car de cara sera la fila o columna
 )
 
 ;; Para poder girar
@@ -241,7 +224,7 @@
                (GirarIzq_aux filaColumna primerFilaColumna 0)))) ; cont = 0 como condicion de parada
 )
 
-(define (GirarDer filaColumna)
+(define (GirarDer filaColumna) ; Para girar hacia la derecha
   (GirarDer_aux (cadddr filaColumna) filaColumna 1)
 )
 
@@ -257,15 +240,7 @@
 )
 
 ;; Para obtener columnas se necesita la transpuesta
-(define (transponer mat)
-  (cond ((not (null? mat))
-         (cons (transpuesta (car mat))
-               (transponer (cdr mat)) ))
-        (else
-         '()))
-)
-
-(define (transpuesta mat)
+(define (transpuesta mat) ; Transpone la matriz. Es decir, reemplaza filas por columnas en el cubo
   (cond ((null? (car mat))
          '())
         (else
@@ -302,14 +277,14 @@
   )
 ;;_______________________________________________
 
-(define (convertirALista matriz) ; Matriz -> Lista ;; ** Cambiar nombre por obtenerLista **
+(define (convertirALista matriz) ; Matriz -> Lista
   (cond ((>= (largo matriz) 1)
          (convertir_aux matriz matriz))
         (else
          '())
         ))
 
-(define (convertirAMatriz matriz) ; Entradas de cubo -> Matriz | Convierte las entradas del cubo en matriz
+(define (convertirAMatriz matriz) ; Entradas de cubo -> Matriz | Convierte las entradas del cubo en una matriz reducida y mas sencilla
   (cond ((>= (largo matriz) 1)
          (cons (convertir_aux (car matriz) (car matriz))
                (convertirAMatriz (cdr matriz))))
@@ -338,15 +313,20 @@
          (+ 1 (largo (cdr lista))))))
 
 ;; Dimensiones de cubo
-(define (dimensiones lista)
-  (largo (car lista)))
+(define (dimensiones Cubo)
+  (largo (car Cubo)))
+
 ;;___________________________________
 
 ;; Invertir Lista
+;(define (invertirLista lista)
+;  (cond
+;    ((empty? lista)empty)
+;    (else (append (invertirLista (cdr lista)) (list (car lista))))))
+
+;; Invertir lista
 (define (invertirLista lista)
-  (cond
-    ((empty? lista)empty)
-    (else (append (invertirLista (cdr lista)) (list (car lista))))))
+  (darVuelta_aux lista '()))
 
 ;; Seleccionar caras ((F)(L)(U)) 1,4,5
 (define (carasFLU matriz)
@@ -363,27 +343,6 @@
     (else (carasFLU-aux (cdr matriz) (+ 1 contador)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Para pruebas
-(define cubo3 '(( (v v v) (v v v) (v v v) )
-                ( (r r r) (r r r) (r r r) )
-                ( (a a a) (a a a) (a a a) )
-                ( (an an an) (an an an) (an an an) )
-                ( (b b b) (b b b) (b b b) )
-                ( (am am am) (am am am) (am am am) )))
-
-(define cubo3F1D '(( (an an an) (v v v) (v v v) )
-                   ( (v v v) (r r r) (r r r) )
-                   ( (r r r) (a a a) (a a a) )
-                   ( (a a a) (an an an) (an an an) )
-                   ( (b b b) (b b b) (b b b ) )
-                   ( (am am am) (am am am) (am am am)) ))
-
-(define cubo3raro '(((b am b) (am b am) (b am b))
-                    ((v a v) (a v a) (v a v))
-                    ((am b am) (b am b) (am b am))
-                    ((a v a) (v a v) (a v a))
-                    ((r an r) (an r an) (r an r))
-                    ((an r an) (r an r) (an r an))))
-
 (define cubo2Desor '(( (b an) (r b))
                      ( (b am) (a v))
                      ( (r a) (am v))
