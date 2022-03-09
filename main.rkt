@@ -1,10 +1,9 @@
 #lang racket
 (require "rubik.rkt")
-(require "interfaz.rkt")
-
+(require "InterfazGrafica.rkt")
 
 (define (RS X Cubo Movs)
-  (inicio  (RS_aux X Cubo Movs)))
+  (iniciarInterfaz  (RS_aux X Cubo Movs)))
 
 (define (RS_aux X Cubo Movs)
   (cond
@@ -16,6 +15,7 @@
             (estadosDelCubo X Cubo (list (car Movs)))
             (cdr Movs)) ))))
 
+<<<<<<< HEAD
 (define cubo2Desor '(( (b an) (r b))
                      ( (b am) (a v))
                      ( (r a) (am v))
@@ -29,6 +29,9 @@
                      ( (an b b) (a r r) (am r r) )
                      ( (a v a) (v v an) (an an b) )
                      ( (v am a) (b a an) (an am v) )))
+=======
+
+>>>>>>> 08d612fa8107ddecc4d994d5b654740495d42d81
 
 (define cubo4Desor '(( (r a r a) (v b a v) (am r b b) (a b am a) )
                      ( (r r an an) (an b r v) (a am an a) (r v v an) )
@@ -37,8 +40,17 @@
                      ( (v an am b) (a a am b) (a r v am) (b an a am) )
                      ( (an v an b) (r an v r) (b an v am) (a v an am) )))
 
+<<<<<<< HEAD
 (RS
  3
  cubo3Desor
  '(F1D F3I C3B C2A F2D))
+=======
+
+(RS
+ 4
+cubo4Desor
+ '(F1D F1I C2B))
+
+>>>>>>> 08d612fa8107ddecc4d994d5b654740495d42d81
 
