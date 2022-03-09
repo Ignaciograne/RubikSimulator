@@ -3,7 +3,7 @@
 (require "InterfazGrafica.rkt")
 
 (define (RS X Cubo Movs)
-  (iniciarInterfaz  (cons (carasFLU Cubo) (RS_aux X Cubo Movs))))
+  (iniciarInterfaz  (RS_aux X Cubo Movs)))
 
 (define (RS_aux X Cubo Movs)
   (cond
@@ -36,15 +36,8 @@
                      ( (v an am b) (a a am b) (a r v am) (b an a am) )
                      ( (an v an b) (r an v r) (b an v am) (a v an am) )))
 
-(define cubo3Or '(( (b b b) (b b b) (b b b) )
-                     ( (an an an) (an an an) (an an an) )
-                     ( (am am am) (am am am) (am am am) )
-                     ( (r r r) (r r r) (r r r) )
-                     ( (v v v) (v v v) (v v v) )
-                     ( (a a a) (a a a) (a a a) )))
-
 
 (RS
  3
- cubo3Or
+ cubo3Desor
  '(F1D F3I C3B C2A F2D))
