@@ -123,7 +123,13 @@
 )
 
 (define (re_reordenar_cubo Cubo) ; Para el cambio de filas a columnas
-  (reordenar_cubo_aux (car Cubo) (car (cdr (cddddr Cubo))) (darVuelta (darVuelta_aux (car (cddr Cubo)) '())) (car (cddddr Cubo)) (car (cdr Cubo))  (car (cdddr Cubo)))
+  (reordenar_cubo_aux
+   (car Cubo)
+   (car (cdr (cddddr Cubo)))
+   (darVuelta (darVuelta_aux (car (cddr Cubo)) '()))
+   (car (cddddr Cubo))
+   (car (cdr Cubo))
+   (car (cdddr Cubo)))
 )
 
 (define (reordenar_cubo_aux primerCara quintaCara tercerCara sextaCara cuartaCara segundaCara) ;; Esta funcion no me representa x2 :v Pero a falta de append
