@@ -318,15 +318,9 @@
 
 ;;___________________________________
 
-;; Invertir Lista
-(define (invertirLista lista)
-  (cond
-    ((empty? lista)empty)
-    (else (append (invertirLista (cdr lista)) (list (car lista))))))
-
 ;; Invertir lista
-;(define (invertirLista lista)
-;  (darVuelta_aux lista '()))
+(define (invertirLista lista)
+  (darVuelta_aux lista '()))
 
 ;; Seleccionar caras ((F)(L)(U)) 1,4,5
 (define (carasFLU matriz)
