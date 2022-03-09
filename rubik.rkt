@@ -108,19 +108,8 @@
   (reordenar_cubo_aux (car Cubo) (car (cddddr Cubo)) (darVuelta (darVuelta_aux (car (cddr Cubo)) '())) (car (cdr (cddddr Cubo))) (car (cdddr Cubo)) (car (cdr Cubo)))
 )
 
-<<<<<<< HEAD
 (define (re_reordenar_cubo Cubo) ; Para el cambio de filas a columnas. Se diferencia de la transpuesta en que esta solamente REORDENA las entradas, mas no realiza cambios en el cubo
   (reordenar_cubo_aux (car Cubo) (car (cdr (cddddr Cubo))) (darVuelta (darVuelta_aux (car (cddr Cubo)) '())) (car (cddddr Cubo)) (car (cdr Cubo))  (car (cdddr Cubo)))
-=======
-(define (re_reordenar_cubo Cubo) ; Para el cambio de filas a columnas
-  (reordenar_cubo_aux
-   (car Cubo)
-   (car (cdr (cddddr Cubo)))
-   (darVuelta (darVuelta_aux (car (cddr Cubo)) '()))
-   (car (cddddr Cubo))
-   (car (cdr Cubo))
-   (car (cdddr Cubo)))
->>>>>>> 08d612fa8107ddecc4d994d5b654740495d42d81
 )
 
 (define (reordenar_cubo_aux primerCara segundaCara tercerCara cuartaCara quintaCara sextaCara) ; Reordena el cubo en funcion de cuales caras se quieran reordenar
@@ -330,14 +319,14 @@
 ;;___________________________________
 
 ;; Invertir Lista
-;(define (invertirLista lista)
-;  (cond
-;    ((empty? lista)empty)
-;    (else (append (invertirLista (cdr lista)) (list (car lista))))))
+(define (invertirLista lista)
+  (cond
+    ((empty? lista)empty)
+    (else (append (invertirLista (cdr lista)) (list (car lista))))))
 
 ;; Invertir lista
-(define (invertirLista lista)
-  (darVuelta_aux lista '()))
+;(define (invertirLista lista)
+;  (darVuelta_aux lista '()))
 
 ;; Seleccionar caras ((F)(L)(U)) 1,4,5
 (define (carasFLU matriz)
